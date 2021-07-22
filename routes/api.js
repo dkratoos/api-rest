@@ -2,7 +2,7 @@
 const express = require('express')
 const lib = require('pipedrive')
 const router = express.Router()
-const Student = require('../models/student')
+const Deal = require('../models/deal')
 
 
 // router.get('/', async function(req,res,next){

@@ -25,7 +25,7 @@ app.listen(process.env.port || 4000, function(){
     console.log('Ready to Go!')
 })
 
-const Student = require('./models/student')
+const Deal = require('./models/deal')
 
 app.get('/', async function(req,res,next){
     const controller = lib.DealsController
@@ -54,7 +54,7 @@ app.get('/', async function(req,res,next){
         })
         console.log(dealsPerDate)
         
-        Student.insertMany(dealsPerDate)
+        Deal.insertMany(dealsPerDate)
     })
 
     res.send(user)

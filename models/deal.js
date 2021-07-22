@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// create student schema & model
-const StudentSchema = new Schema({
+const DealSchema = new Schema({
     value: {
         type: Number,
     },
@@ -12,6 +11,6 @@ const StudentSchema = new Schema({
 });
 
 
-const Student = mongoose.model('student',StudentSchema);
+const Deal = mongoose.model('deal',DealSchema);
 
-module.exports = Student;
+module.exports = Deal;
