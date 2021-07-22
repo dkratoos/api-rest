@@ -1,29 +1,50 @@
 
 const express = require('express')
-const lib = require('pipedrive')
 const router = express.Router()
+
+const moment = require('moment')
 const Deal = require('../models/deal')
 
+const lib = require('pipedrive')
+lib.Configuration.apiToken = '3d0c08562bf2aa874462b3ab6b472f64868eacbb'
 
-// router.get('/', async function(req,res,next){
-//     var controller = lib.DealsController
-//     var input = {}
-//     input['status'] = 'won'
+// get a list of deals from the database
+router.get('/deals',function(req,res,next){
+    Deal.find({}).then(function(deals){
+        res.send(deals);
+    }).catch(next);
+});
 
-//     const user = await controller.getAllDeals(input, function(error, response, context) {
-//         const deals = response.data.map(item => {
-//             return {
-//                 value: item.value,
-//                 wonTime: item.won_time
-//             }
-//         })
+// get deals from pipedrive and register on mongodb
+router.get('/', async function(req,res,next){
+  const controller = lib.DealsController
+  const input = {
+      status: 'won'
+  }
 
-//         Student.create(deals).then(function(student){
-//             res.send(student)
-//         }).catch(next)
-//     })
+  await controller.getAllDeals(input, function(error, response, context) {
+      const dealsPerDate = []
 
-//     res.send(user)
-// })
+      const deals = response.data.map(item => {
+          return {
+              value: item.value,
+              wonTime: moment(item.won_time).format('L')
+          }
+      })
+
+      deals.filter(deal => {
+          const hasDeal = dealsPerDate.findIndex(dealPerDate => dealPerDate.wonTime === deal.wonTime)
+
+          if (hasDeal !== -1) {
+              dealsPerDate[hasDeal].value += deal.value
+          } else {
+              dealsPerDate.push(deal)
+          }
+      })
+
+      Deal.insertMany(dealsPerDate)
+      res.send()
+  })
+})
 
 module.exports = router
