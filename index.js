@@ -52,11 +52,8 @@ app.get('/', async function(req,res,next){
                 dealsPerDate.push(deal)
             }
         })
-        console.log(dealsPerDate)
-        
-        Deal.insertMany(dealsPerDate)
-    })
 
-    res.send(user)
+        Deal.insertMany(dealsPerDate)
+        res.send(dealsPerDate)
+    })
 })
-    
